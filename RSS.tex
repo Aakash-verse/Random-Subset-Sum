@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+\title{Discrete Random Subset Sum Problem}
+\author{Aakash Kumar}
+\date{June 2025}
+
+\begin{document}
+
+\maketitle
+
+\section{The Random Subset Sum Problem}
+Consider the set of random variables $X_1,X_2,\dots,X_n$ sampled uniformly from $\{-M,-M+1,\dots,M-1,M\}$ for some positive integer $M$ and target $z\in\{-M,-M+1,\dots,M-1,M\}$. Let $e\in\{0,\dots,M\}$ The Random Subset Sum Problem (RSSP) is the problem of finding a subset $S\subseteq [n]$ such that
+\begin{equation*}
+    \big|\sum_{i\in S} X_i - z\big|\leq e.
+\end{equation*}
+Let $f_t:\mathbb{Z}\to\{0,1\}$ be the indicator for the event $z$ is $e$ approximated at time $t\in\mathbb{N}$, i.e.,
+\begin{equation*}
+    f_t(z) = \mathbb{I}_{\exists S\subseteq [t]\;:\;|\sum_{i\in S}X_i-z|\leq e}.
+\end{equation*}
+It is clear that $f_t$ follows the following recurrence relation
+\begin{equation*}
+    f_{t+1}(z)=f_{t}(z)+(1-f_t(z))f_t(z-X_{t+1}).
+\end{equation*}
+Define $v_t$ as
+\begin{equation*}
+    v_t=\sum_{i=-M}^M f_t(i).
+\end{equation*}
+\begin{theorem}
+We have
+\begin{equation*}
+    \mathbb{E}(v_{t+1}|X_1,X_2,\dots,X_t)\geq v_t+\frac{v_t}{4}\left(1-\frac{v_t}{2M}\right).
+\end{equation*}
+\end{theorem}
+\begin{proof}
+Consider
+\begin{align*}
+    \mathbb{E}(v_{t+1}|X_1,X_2,\dots,X_t) &= \mathbb{E}\left(\sum_{i=-M}^M f_{t+1}(i)|X_1,X_2,\dots,X_t\right)\\
+    &= \mathbb{E}\left(\sum_{i=-M}^M (f_{t}(i)+(1-f_t(i))f_t(i-X_{t+1}))|X_1,X_2,\dots,X_t\right)\\
+    &= \frac{1}{2M}\sum_{j=-M}^M \sum_{i=-M}^M f_t(i)+(1-f_t(i))f_t(i-j)\\
+    &= \sum_{i=-M}^M f_t(i)+\frac{1}{2M}\sum_{j=-M}^M \sum_{i=-M}^M (1-f_t(i))f_t(i-j)\\
+    &= v_t+\frac{1}{2M} \sum_{i=-M}^M \left((1-f_t(i))\sum_{j=-M}^M f_t(i-j)\right)\\
+    &= v_t+\frac{1}{2M} \sum_{i=-M}^M (1-f_t(i))\sum_{k=i-M}^{i+M}f_t(k)
+    \end{align*}
+where $i-j=k$. Hence we have
+    \begin{align*}    
+    \mathbb{E}(v_{t+1}|X_1,X_2,\dots,X_t) \geq v_t + \frac{1}{2M}\sum_{i=-\frac{M}{2}+\mu}^{i=\frac{M}{2}+\mu}\left((1-f_t(i))\sum_{k=-\frac{M}{2}+\mu}^{k=-\frac{M}{2}+\mu}f_t(k)\right)
+\end{align*}
+for some $\mu\in \{-M/2,\dots,M/2\}$. Now $\exists\; \mu^*\in \{-M/2,\dots,M/2\}$ such that
+\begin{equation*}
+    \sum_{k=-\frac{M}{2}+\mu}^{k=-\frac{M}{2}+\mu}f_t(k)\geq \frac{v_t}{2}.
+\end{equation*}
+Choose $\mu=\mu^*$. Hence we get
+\begin{align*}
+    \mathbb{E}(v_{t+1}|X_1,X_2,\dots,X_t) &\geq v_t + \frac{1}{2M}\frac{v_t}{2}\sum_{i=-\frac{M}{2}+\mu}^{i=\frac{M}{2}+\mu}\left(1-f_t(i)\right)\\
+    &\geq v_t+\frac{v_t}{4}\left(1-\frac{v_t}{2M}\right).
+\end{align*}
+\end{proof}
+\end{document}
