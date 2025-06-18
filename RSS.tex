@@ -5,6 +5,7 @@
 \usepackage{amsfonts}
 \usepackage{amsthm}
 \newtheorem{theorem}{Theorem}
+\usepackage{hyperref}
 \title{Discrete Random Subset Sum Problem}
 \author{Aakash Kumar}
 \date{June 2025}
@@ -14,7 +15,7 @@
 \maketitle
 
 \section{The Random Subset Sum Problem}
-Consider the set of random variables $X_1,X_2,\dots,X_n$ sampled uniformly from $\{-M,-M+1,\dots,M-1,M\}$ for some positive integer $M$ and target $z\in\{-M,-M+1,\dots,M-1,M\}$. Let $e\in\{0,\dots,M\}$ The Random Subset Sum Problem (RSSP) is the problem of finding a subset $S\subseteq [n]$ such that
+Consider the set of random variables $X_1,X_2,\dots,X_n$ sampled uniformly from $\{-M,-M+1,\dots,M-1,M\}$ for some positive integer $M$ and target $z\in\{-M,-M+1,\dots,M-1,M\}$. Let $e\in\mathbb{N}\cup\{0\}$. The Random Subset Sum Problem (RSSP) is the problem of finding a subset $S\subseteq [n]$ such that
 \begin{equation*}
     \big|\sum_{i\in S} X_i - z\big|\leq e.
 \end{equation*}
@@ -31,7 +32,8 @@ Define $v_t$ as
     v_t=\sum_{i=-M}^M f_t(i).
 \end{equation*}
 \begin{theorem}
-We have
+\label{thm:EVt}
+For all $0\leq t \leq n$, it holds that
 \begin{equation*}
     \mathbb{E}(v_{t+1}|X_1,X_2,\dots,X_t)\geq v_t+\frac{v_t}{4}\left(1-\frac{v_t}{2M}\right).
 \end{equation*}
@@ -46,7 +48,7 @@ Consider
     &= v_t+\frac{1}{2M} \sum_{i=-M}^M \left((1-f_t(i))\sum_{j=-M}^M f_t(i-j)\right)\\
     &= v_t+\frac{1}{2M} \sum_{i=-M}^M (1-f_t(i))\sum_{k=i-M}^{i+M}f_t(k)
     \end{align*}
-where $i-j=k$. Hence we have
+where $k=i-j$. Hence we have
     \begin{align*}    
     \mathbb{E}(v_{t+1}|X_1,X_2,\dots,X_t) \geq v_t + \frac{1}{2M}\sum_{i=-\frac{M}{2}+\mu}^{i=\frac{M}{2}+\mu}\left((1-f_t(i))\sum_{k=-\frac{M}{2}+\mu}^{k=-\frac{M}{2}+\mu}f_t(k)\right)
 \end{align*}
@@ -59,5 +61,37 @@ Choose $\mu=\mu^*$. Hence we get
     \mathbb{E}(v_{t+1}|X_1,X_2,\dots,X_t) &\geq v_t + \frac{1}{2M}\frac{v_t}{2}\sum_{i=-\frac{M}{2}+\mu}^{i=\frac{M}{2}+\mu}\left(1-f_t(i)\right)\\
     &\geq v_t+\frac{v_t}{4}\left(1-\frac{v_t}{2M}\right).
 \end{align*}
+\end{proof}
+\noindent The main results depend on analysis how $v_t$ grows with $t$. It turns out that $v_t$ grows quickly to $M$ and then slowly rises to $2M$. Define $\tau_1$ as
+\begin{equation*}
+    \tau_1 = \min \{t\geq 0: v_t>M\}.
+\end{equation*}
+\begin{theorem}
+    \label{thm:pvt1}
+    Given $\beta \in (0,1/8)$, let $p_\beta = 1-\frac{7}{8(1-\beta)}$. For all integers $0\leq t<\tau_1$ it holds that
+    \begin{equation*}
+        \mathbb{P}(v_{t+1}\geq v_t(1+\beta)\;|\;X_1,\dots,X_t,t\leq \tau_1)\geq p_\beta.
+    \end{equation*}
+\end{theorem}
+\begin{proof}
+    Define the process
+    \begin{equation*}
+            \tilde{v}=\sum_{i=-M}^M(f_t(i)+(1-f_t(i))f_t(i-X_{t+1})\mathbb{I}_{\{M,\dots,M\}})
+    \end{equation*}
+    Clearly $\tilde{v}\leq v_{t+1}$ and $\tilde{v}\leq 2v_t$. The bound in Theorem \ref{thm:EVt} also holds for $\tilde{v}$. Hence we have
+    \begin{equation*}
+        \mathbb{P}(v_{t+1}\geq v_t(1+\beta)\;|\;X_1,\dots,X_t,t\leq \tau_1)\geq \mathbb{P}(\tilde{v}\geq v_t(1+\beta)\;|\;X_1,\dots,X_t,t\leq \tau_1).
+    \end{equation*}
+    Now recall the reverse Markov's inequality, for any random variable $X$ such that $0\leq X\leq b$ and $0\leq a\leq\mathbb{E}[X]$, we have
+    \begin{equation*}
+        \mathbb{P}(X\geq a)\geq \frac{\mathbb{E}[X]-a}{b-a}.
+    \end{equation*}
+    Using reverse Markov's inequality, we have
+    \begin{align*}
+        \mathbb{P}(\tilde{v}\geq v_t(1+\beta)\;|\;X_1,\dots,X_t,t\leq \tau_1) &\geq \frac{\mathbb{E}[v_t|X_1,\dots,X_t,t<\tau_1]-v_t(1-\beta)}{2v_t-v_t(1-\beta)}\\
+        & \geq \frac{\frac{9}{8}v_t-v_t(1+\beta)}{2v_t-v_t(1+\beta)}\\
+        &=\frac{\frac{9}{8}-(1+\beta)}{1-\beta}\\
+        &=1-\frac{7}{8(1-\beta)}.
+    \end{align*}
 \end{proof}
 \end{document}
